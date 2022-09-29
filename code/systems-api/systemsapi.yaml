@@ -1,0 +1,16 @@
+openapi: "3.0.2"
+info:
+  description: "REST API to interact with Systems"
+  title: Systems API
+  version: "1.0"
+  contact:
+    email: "jiri.svacha@eli-beams.eu"
+
+servers:
+  - url: http://localhost:3700/v1
+paths:
+  /testx:
+    get:
+      responses:
+        "200":
+          description: OK

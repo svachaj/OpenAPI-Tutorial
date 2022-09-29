@@ -1,0 +1,32 @@
+version: '3.9'
+
+networks:
+  openapi-tutorial-net:
+    name: openapi-tutorial-net
+    driver: bridge
+
+services:
+  neo4j:
+    container_name: neo4j-tutorial
+    image: neo4j:4.4.6@sha256:ac30efa12f5a78ea981784d538243afc743ec59bb7823cbbeabe336beb68354b
+    restart: unless-stopped
+    environment:
+      - NEO4J_AUTH=none
+      - NEO4JLABS_PLUGINS=["apoc"]
+    volumes:
+      - "$HOME/neo4j-tutorial/data:/data"
+      - "$HOME/neo4j-tutorial/logs:/logs"
+      - "$HOME/neo4j-tutorial/plugins:/plugins"
+    networks:
+      - openapi-tutorial-net
+    ports:
+      - "3774:7474"
+      - "3787:7687"
+  swagger-editor:
+    container_name: swagger-editor
+    image: swaggerapi/swagger-editor:v4.4.1@sha256:fc112d42bd803c2c2ea3ca9f7e62b7411020949c5e38b51d3712ab2c7ebdd7d2
+    restart: unless-stopped
+    ports:
+      - "3777:8080"
+    networks:
+      - openapi-tutorial-net
