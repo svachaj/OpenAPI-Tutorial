@@ -7,15 +7,15 @@ Install docker(compose) and run(neo4j database + openapi server):
 
 ## Running docker services:
 
-tutorial-api: localhost:3700
+tutorial-api: [localhost:3700](localhost:3700)
 
-neo4j: localhost:7474
+neo4j: [localhost:7474](localhost:7474)
 
 (aditional service - run docker-compose-tools.yml)
 
-swagger-editor: localhost:3777
+swagger-editor: [localhost:3777](localhost:3777)
 
-grafana: localhost:3788 (on Linux run: sudo chown 472 $HOME/grafana-tutorial/data)
+grafana: [localhost:3788](localhost:3788) (on Linux run: sudo chown 472 $HOME/grafana-tutorial/data)
 
 # Systems database OpenAPI specification
 
