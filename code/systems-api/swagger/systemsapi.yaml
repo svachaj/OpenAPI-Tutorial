@@ -109,7 +109,7 @@ paths:
             default: 10
             maximum: 1000
             minimum: 1
-          example: l1
+          example: 10
             
       responses:
         '500':
@@ -266,11 +266,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ResponseMessage'
-  /system/maintenances:
+  /system/maintenance:
     get:
-      summary: Get a list of maintenances
-      description: Get a list of maintenances. Optionaly filtered by System code
-      operationId: getSystemMaintenances
+      summary: Get a list of maintenance
+      description: Get a list of maintenance. Optionaly filtered by System code
+      operationId: getSystemMaintenance
       tags: 
         - Maintenance
       parameters: 
@@ -309,6 +309,20 @@ paths:
           schema:
             type: string
             example: L1CS1PS1
+        - name: from
+          in: query
+          description: Time range - from
+          required: false
+          schema:
+            type: string
+            example: 2022-10-01T20:35:01
+        - name: to
+          in: query
+          description: Time range- to
+          required: false
+          schema:
+            type: string
+            example: 2022-10-01T20:35:04
       responses:
         '500':
           description: General server error

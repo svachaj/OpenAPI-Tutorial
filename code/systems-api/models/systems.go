@@ -1,9 +1,11 @@
 package models
 
+import "time"
+
 type System struct {
 	Name             string `json:"name"`
 	Code             string `json:"code"`
-	ParentSystemCode string `json:"parentSystemCode,omitempty"`
+	ParentSystemCode string `json:"parentSystemCode"`
 }
 
 type ResponseMessage struct {
@@ -11,9 +13,9 @@ type ResponseMessage struct {
 }
 
 type Maintenance struct {
-	SystemName string `json:"systemName"`
-	When       string `json:"when"`
-	Username   string `json:"username"`
+	SystemName string    `json:"systemName"`
+	When       time.Time `json:"when"`
+	Username   string    `json:"username"`
 }
 
 type Configuration struct {
@@ -22,7 +24,7 @@ type Configuration struct {
 }
 
 type TimeValueLog struct {
-	Time  string  `json:"time"`
-	Value float64 `json:"value"`
-	Unit  string  `json:"unit"`
+	Time  time.Time `json:"time"`
+	Value float64   `json:"value"`
+	Unit  string    `json:"unit"`
 }

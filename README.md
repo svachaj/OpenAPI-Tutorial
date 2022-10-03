@@ -11,3 +11,9 @@ neo4j: localhost:7474
 swagger-editor: localhost:3777
 grafana: localhost:3788 (on Linux run: sudo chown 472 $HOME/grafana-tutorial/data)
 tutorial-api: localhost:3700
+
+# Useful tools and links
+
+https://oai.github.io/
+https://editor.swagger.io/
+https://openapi.tools/
