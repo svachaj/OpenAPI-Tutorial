@@ -1,16 +1,313 @@
-openapi: "3.0.2"
+openapi: "3.0.3"
 info:
-  description: "REST API to interact with Systems"
+  description: This is a REST API to interact with "Systems database". Systems database is for PCaPAC conference tutorial purposes. It is a very simplified system to handle different type of devices, equipment and others. For our purposes we will offer an option to get a configuration of such a Systems also as a list of maintenance of this Systems. There will be also a time-value log, ususaly from the sensor Systems.
   title: Systems API
   version: "1.0"
   contact:
     email: "jiri.svacha@eli-beams.eu"
-
+  license:
+    name: MIT License
+    url: https://github.com/JiriSvachaEliBeams/OpenAPI-Tutorial/blob/main/LICENSE
+externalDocs:
+  description: Systems database GitHub project
+  url: https://github.com/JiriSvachaEliBeams/OpenAPI-Tutorial
 servers:
   - url: http://localhost:3700/v1
+tags:
+  - name: Systems
+    description: General operations about Systems 
+  - name: Configuration
+    description: Everything about Systems configuration
+  - name: Maintenance
+    description: Maintenance of the Systems
+  - name: Time-Value Log
+    description: Time-Value statistics
+components:
+  schemas:
+    System:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Chamber 1
+        code:
+          type: string
+          example: CH1
+        parentSystemCode:
+          type: string
+          example: L1
+    Configuration:
+      type: object
+      properties:
+        key:
+          type: string
+          example: ExposureMode
+        value:
+          type: string
+          example: timed
+    Maintenance:
+      type: object
+      properties:
+        SystemName:
+          type: string
+          example: Chamber 1
+        When:
+          type: string
+          format: datetime
+          example: 2022-01-05T15:33
+        Username:
+          type: string
+          example: Jiri
+    TimeValueLog:
+      type: object
+      properties:
+        time:
+          type: string
+          example: 2022-10-01T15:33:26.1585
+          format: datetime
+        value:
+          type: number
+          example: 10.58
+        unit:
+          type: string
+          example: ˚C
+    ResponseMessage:
+      type: object
+      properties:
+        message:
+          type: string
+          example: System was succesfuly created.
 paths:
-  /testx:
+  /systems:
     get:
+      summary: Finds Systems by search text
+      description: Get a list of Systems by name or code. There is also a limit parameter (default 10 items).
+      operationId: getSystemsByNameOrCode
+      tags: 
+        - Systems
+      parameters: 
+        - name: searchText
+          in: query
+          description: Text to search in name or code of the System.
+          required: false
+          schema:
+            type: string
+          example: cam
+        - name: limit
+          in: query
+          description: Limit of returned items.
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 10
+            maximum: 1000
+            minimum: 1
+          example: l1
+            
       responses:
-        "200":
-          description: OK
+        '500':
+          description: General server error
+        '401':
+          description: Invalid limit
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/System'
+  /system:
+    post:
+      summary: Create new System
+      description: Create new System. If parentSystemCode is specified, create also hierrarchical relationship to this parent System.
+      operationId: createNewSystem
+      tags: 
+        - Systems
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/System'
+      responses:
+        '500':
+          description: General server error
+        '401':
+          description: Invalid code of the parent System
+        '402':
+          description: System with this code already exists
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseMessage'
+  /system/{systemCode}:
+    get:
+      summary: Get one System
+      description: Get one System by code
+      operationId: getSystemByCode
+      tags: 
+        - Systems
+      parameters: 
+        - name: systemCode
+          in: path
+          description: System code
+          required: true
+          schema:
+            type: string
+            example: L1
+      responses:
+        '500':
+          description: General server error
+        '401':
+          description: System not found
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/System'
+    delete:
+      summary: Delete one System
+      description: Delete one System by code
+      operationId: deleteSystemByCode
+      tags: 
+        - Systems
+      parameters: 
+        - name: systemCode
+          in: path
+          description: System code
+          required: true
+          schema:
+            type: string
+            example: ABCD
+      responses:
+        '500':
+          description: General server error
+        '401':
+          description: System not found
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseMessage'
+  /system/configuration/{systemCode}:
+    get:
+      summary: Get configuration for specific System
+      description: Get list of the key-value configuratin for one specific System by its code
+      operationId: getSystemConfigurationBySystemCode
+      tags: 
+        - Configuration
+      parameters: 
+        - name: systemCode
+          in: path
+          description: System code
+          required: true
+          schema:
+            type: string
+            example: L1
+      responses:
+        '500':
+          description: General server error
+        '401':
+          description: System not found
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Configuration'
+    delete:
+      summary: Delete one configuration
+      description: Delete one configuration System code and Config key
+      operationId: deleteConfigurationByKeyAndSystemCode
+      tags: 
+        - Configuration
+      parameters: 
+        - name: systemCode
+          in: path
+          description: System code
+          required: true
+          schema:
+            type: string
+            example: L1CS1CAM1
+        - name: key
+          in: query
+          description: Configuration key
+          required: true
+          schema:
+            type: string
+            example: ExposureMode
+      responses:
+        '500':
+          description: General server error
+        '401':
+          description: System not found
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseMessage'
+  /system/maintenances:
+    get:
+      summary: Get a list of maintenances
+      description: Get a list of maintenances. Optionaly filtered by System code
+      operationId: getSystemMaintenances
+      tags: 
+        - Maintenance
+      parameters: 
+        - name: systemCode
+          in: query
+          description: System code
+          required: false
+          schema:
+            type: string
+            example: L1CH1
+      responses:
+        '500':
+          description: General server error
+        '401':
+          description: System not found
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Maintenance'
+  /system/time-value-logs/{systemCode}:
+    get:
+      summary: Get a list of time-value logs
+      description: Get a list of time-value logs for a specific System
+      operationId: getSystemTimeValueLogs
+      tags: 
+        - Time-Value Log
+      parameters: 
+        - name: systemCode
+          in: path
+          description: System code
+          required: true
+          schema:
+            type: string
+            example: L1CS1PS1
+      responses:
+        '500':
+          description: General server error
+        '401':
+          description: System not found
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TimeValueLog'
+           
