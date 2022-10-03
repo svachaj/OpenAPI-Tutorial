@@ -1,0 +1,27 @@
+version: '3.9'
+
+networks:
+  openapi-tutorial-net:
+    name: openapi-tutorial-net
+    driver: bridge
+
+services:
+  swagger-editor:
+    container_name: openapi-tutorial-swagger-editor
+    image: swaggerapi/swagger-editor:v4.4.1@sha256:fc112d42bd803c2c2ea3ca9f7e62b7411020949c5e38b51d3712ab2c7ebdd7d2
+    restart: unless-stopped
+    ports:
+      - "3777:8080"
+    networks:
+      - openapi-tutorial-net
+  grafana:
+    container_name: openapi-tutorial-grafana    
+    image: grafana/grafana-oss:9.0.2@sha256:1e180fcaede581b8cc8e2ce8bc010daff9c64972023a0faaf226d92bd9840113   
+    user: "472:472"
+    restart: unless-stopped   
+    volumes:
+      - "$HOME/grafana-tutorial/data:/var/lib/grafana"      
+    networks:
+      - openapi-tutorial-net
+    ports:
+      - "3788:3000"   
