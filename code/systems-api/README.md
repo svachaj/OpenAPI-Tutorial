@@ -1,0 +1,4 @@
+## OpenAPI Tutorial server
+
+Tutorial token:
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJQQ2FQQUMgVHV0b3JpYWwiLCJuYW1lIjoiSmlyaSBTdmFjaGEiLCJpYXQiOjE1MTYyMzkwMjJ9.S5ppu9pu39F89uNXvJFjd2i1eTnBY920TVLn4wbi6uM
