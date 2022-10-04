@@ -25,6 +25,8 @@ grafana: [localhost:3788](http://localhost:3788) (on Linux run: `sudo chown 472 
 
 [OpenAPI initiative](https://oai.github.io/)
 
+[OpenAPI specification](https://swagger.io/specification/)
+
 [Swagger editor](https://editor.swagger.io/)
 
 [List of OpenAPI tools](https://openapi.tools/)
