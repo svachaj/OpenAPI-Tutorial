@@ -15,20 +15,22 @@ servers:
   - url: http://localhost:3700/v1
 tags:
   - name: Systems
-    description: General operations about Systems 
+    description: General operations about Systems
   - name: Configuration
     description: Everything about Systems configuration
   - name: Maintenance
     description: Maintenance of the Systems
   - name: Time-Value Log
     description: Time-Value statistics
+  - name: Database
+    description: Section to manage neo4j database
 components:
   securitySchemes:
     jwtAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
-      description: 'Tutorial token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJQQ2FQQUMgVHV0b3JpYWwiLCJuYW1lIjoiSmlyaSBTdmFjaGEiLCJpYXQiOjE1MTYyMzkwMjJ9.S5ppu9pu39F89uNXvJFjd2i1eTnBY920TVLn4wbi6uM'
+      description: "Tutorial token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJQQ2FQQUMgVHV0b3JpYWwiLCJuYW1lIjoiSmlyaSBTdmFjaGEiLCJpYXQiOjE1MTYyMzkwMjJ9.S5ppu9pu39F89uNXvJFjd2i1eTnBY920TVLn4wbi6uM"
   schemas:
     System:
       type: object
@@ -84,14 +86,32 @@ components:
           type: string
           example: System was succesfuly created.
 paths:
+  /database/deleteAndInitNewData:
+    post:
+      summary: Recreate data in our neo4j database
+      description: Delete all existing data in the database and run init data script.
+      operationId: recreateDatabaseData
+      security:
+        - jwtAuth: []
+      tags:
+        - Database
+      responses:
+        "500":
+          description: General server error
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseMessage"
   /systems:
     get:
       summary: Finds Systems by search text
       description: Get a list of Systems by name or code. There is also a limit parameter (default 10 items).
       operationId: getSystemsByNameOrCode
-      tags: 
+      tags:
         - Systems
-      parameters: 
+      parameters:
         - name: searchText
           in: query
           description: Text to search in name or code of the System.
@@ -110,20 +130,20 @@ paths:
             maximum: 1000
             minimum: 1
           example: 10
-            
+
       responses:
-        '500':
+        "500":
           description: General server error
-        '401':
+        "401":
           description: Invalid limit
-        '200':
+        "200":
           description: Successful operation
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/System'
+                  $ref: "#/components/schemas/System"
   /system:
     post:
       summary: Create new System
@@ -131,34 +151,34 @@ paths:
       operationId: createNewSystem
       security:
         - jwtAuth: []
-      tags: 
+      tags:
         - Systems
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/System'
+              $ref: "#/components/schemas/System"
       responses:
-        '500':
+        "500":
           description: General server error
-        '401':
+        "401":
           description: Invalid code of the parent System
-        '402':
+        "402":
           description: System with this code already exists
-        '200':
+        "200":
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResponseMessage'
+                $ref: "#/components/schemas/ResponseMessage"
   /system/{systemCode}:
     get:
       summary: Get one System
       description: Get one System by code
       operationId: getSystemByCode
-      tags: 
+      tags:
         - Systems
-      parameters: 
+      parameters:
         - name: systemCode
           in: path
           description: System code
@@ -167,25 +187,25 @@ paths:
             type: string
             example: L1
       responses:
-        '500':
+        "500":
           description: General server error
-        '401':
+        "401":
           description: System not found
-        '200':
+        "200":
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/System'
+                $ref: "#/components/schemas/System"
     delete:
       summary: Delete one System
       description: Delete one System by code
       operationId: deleteSystemByCode
       security:
         - jwtAuth: []
-      tags: 
+      tags:
         - Systems
-      parameters: 
+      parameters:
         - name: systemCode
           in: path
           description: System code
@@ -194,24 +214,24 @@ paths:
             type: string
             example: ABCD
       responses:
-        '500':
+        "500":
           description: General server error
-        '401':
+        "401":
           description: System not found
-        '200':
+        "200":
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResponseMessage'
+                $ref: "#/components/schemas/ResponseMessage"
   /system/configuration/{systemCode}:
     get:
       summary: Get configuration for specific System
       description: Get list of the key-value configuratin for one specific System by its code
       operationId: getSystemConfigurationBySystemCode
-      tags: 
+      tags:
         - Configuration
-      parameters: 
+      parameters:
         - name: systemCode
           in: path
           description: System code
@@ -220,27 +240,27 @@ paths:
             type: string
             example: L1
       responses:
-        '500':
+        "500":
           description: General server error
-        '401':
+        "401":
           description: System not found
-        '200':
+        "200":
           description: Successful operation
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Configuration'
+                  $ref: "#/components/schemas/Configuration"
     delete:
       summary: Delete one configuration
       description: Delete one configuration System code and Config key
       operationId: deleteConfigurationByKeyAndSystemCode
       security:
         - jwtAuth: []
-      tags: 
+      tags:
         - Configuration
-      parameters: 
+      parameters:
         - name: systemCode
           in: path
           description: System code
@@ -256,24 +276,24 @@ paths:
             type: string
             example: ExposureMode
       responses:
-        '500':
+        "500":
           description: General server error
-        '401':
+        "401":
           description: System not found
-        '200':
+        "200":
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResponseMessage'
+                $ref: "#/components/schemas/ResponseMessage"
   /system/maintenance:
     get:
       summary: Get a list of maintenance
       description: Get a list of maintenance. Optionaly filtered by System code
       operationId: getSystemMaintenance
-      tags: 
+      tags:
         - Maintenance
-      parameters: 
+      parameters:
         - name: systemCode
           in: query
           description: System code
@@ -282,26 +302,26 @@ paths:
             type: string
             example: L1CH1
       responses:
-        '500':
+        "500":
           description: General server error
-        '401':
+        "401":
           description: System not found
-        '200':
+        "200":
           description: Successful operation
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Maintenance'
+                  $ref: "#/components/schemas/Maintenance"
   /system/time-value-logs/{systemCode}:
     get:
       summary: Get a list of time-value logs
       description: Get a list of time-value logs for a specific System
       operationId: getSystemTimeValueLogs
-      tags: 
+      tags:
         - Time-Value Log
-      parameters: 
+      parameters:
         - name: systemCode
           in: path
           description: System code
@@ -324,16 +344,15 @@ paths:
             type: string
             example: 2022-10-01T20:35:04
       responses:
-        '500':
+        "500":
           description: General server error
-        '401':
+        "401":
           description: System not found
-        '200':
+        "200":
           description: Successful operation
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/TimeValueLog'
-           
+                  $ref: "#/components/schemas/TimeValueLog"

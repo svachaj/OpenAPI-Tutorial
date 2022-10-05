@@ -19,4 +19,6 @@ func MapSystemsRoutes(g *echo.Group, h handlers.ISystemsHandlers, jwtMiddleware 
 	g.GET("/system/maintenance", h.GetSystemMaintenance())
 
 	g.GET("/system/time-value-logs/:systemCode", h.GetSystemTimeValueLogs())
+
+	g.POST("/database/deleteAndInitNewData", h.RecreateDatabaseData(), jwtMiddleware)
 }

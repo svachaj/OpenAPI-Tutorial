@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import logo from "./eli-logo.svg";
 import "./App.css";
 import axios from "axios";
@@ -7,30 +7,32 @@ function App() {
   const [systems, setSystems] = useState([]);
   const [searchText, setSearchText] = useState("");
 
-  const getData = () => {
-    let url = "http://localhost:3700/v1/systems?limit=50";
-    if (searchText != "") url += "&searchText=" + searchText;
-    axios
-      .get(url)
-      .then((res) => {
-        setSystems(res.data);
-      })
-      .catch((err) => {
-        console.error(err);
-      })
-      .finally
-      //could be end of busy indicator here
-      ();
-  };
+
+  const getData = useCallback(
+    () => {
+      let url = "http://localhost:3700/v1/systems?limit=50";
+      if (searchText !== "") url += "&searchText=" + searchText;
+      axios
+        .get(url)
+        .then((res) => {
+          setSystems(res.data);
+        })
+        .catch((err) => {
+          console.error(err);
+        })
+        .finally
+        //could be end of busy indicator here
+        ();
+    },
+    [searchText],
+  );
 
   useEffect(() => {
-    getData();
+    getData()
     document.title = "Systems database";
-  }, []);
+  });
 
-  useEffect(() => {
-    getData();
-  }, [searchText]);
+
 
   return (
     <div className="App">
@@ -48,7 +50,6 @@ function App() {
               setSearchText(e.target.value);
             }}
           />
-          {searchText}
         </div>
         <div className="systemsWrapper">
           {systems.map((val: any) => (

@@ -3,7 +3,11 @@
 Repository for the PCaPAC Tutorial session - OpenAPI
 
 Install docker(compose) and run(neo4j database + openapi server):
+
+If you are in the root project folder go to the code folder first, please. `cd code`
 `docker-compose up -d --build`
+
+To create data in DB use API endpoint /database/deleteAndInitNewData. For example from the docs: [API docs](http://localhost:3700)
 
 ## Running docker services:
 
